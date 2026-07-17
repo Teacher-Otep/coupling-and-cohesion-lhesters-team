@@ -8,11 +8,15 @@ public class PlainTextReceiptFormatter implements ReceiptFormatter {
     }
 
     @Override
-    public String format(Order order, double finalPrice) {
+    public String format(Order order, double subtotal, double discountAmount, double finalPrice) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n===== COFFEE SHOP RECEIPT =====\n");
         sb.append("Customer: ").append(order.getCustomerName()).append("\n");
         sb.append("Beverage: ").append(order.getCoffeeType()).append("\n");
+        sb.append("Subtotal: ").append(currencySymbol).append(" ").append(subtotal).append("\n");
+        if (discountAmount > 0) {
+            sb.append("Discount: -").append(currencySymbol).append(" ").append(discountAmount).append("\n");
+        }
         sb.append("Total Amount (incl. Tax): ").append(currencySymbol).append(" ").append(finalPrice).append("\n");
         sb.append("================================\n");
         return sb.toString();

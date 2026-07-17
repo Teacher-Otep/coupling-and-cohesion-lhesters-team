@@ -13,11 +13,15 @@ public class OrderProcessor {
         this.orderRepository = orderRepository;
     }
 
-    public void processOrder(Order order) {
+    public void processOrder(Order order, DiscountPolicy discountPolicy) {
         System.out.println("[System] Calculating final totals...");
-        double finalPrice = taxCalculator.calculateFinalPrice(order.getBasePrice());
 
-        String receipt = receiptFormatter.format(order, finalPrice);
+        double subtotal = order.getBasePrice();
+        double discountedPrice = discountPolicy.applyDiscount(subtotal);
+        double discountAmount = subtotal - discountedPrice;
+        double finalPrice = taxCalculator.calculateFinalPrice(discountedPrice);
+
+        String receipt = receiptFormatter.format(order, subtotal, discountAmount, finalPrice);
         System.out.println(receipt);
 
         orderRepository.save(order, finalPrice);
